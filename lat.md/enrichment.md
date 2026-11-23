@@ -47,3 +47,19 @@ No goal at or above the cutoff produces a successful `no_sdg` result with an emp
 - [[openalex_sdg.py#_hash_classification_text]] — SHA-256 of the classified text, stored as `text_hash` to decide cache reuse.
 - [[openalex_sdg.py#too_short_for_model]] — skips models that require a minimum word count, configured via `MIN_WORDS_BY_MODEL` (currently empty: the word-count-requiring OSDG model was removed from the public Aurora service).
 - [[openalex_sdg.py#FetchStats]] — per-run counters for abstracts, SDG reuse, source failures, and the Semantic Scholar auth status.
+
+## Abstract enrichment evaluation
+
+Read-only probes compare DOI APIs and publisher-page extraction separately, measuring additional coverage while preserving provenance and distinguishing access failures from absent abstracts.
+
+An abstract field can contain licence text, an introduction, navigation or an
+article-body excerpt. Candidate availability alone is not evidence of a usable
+abstract. Validate DOI identity, content boundaries and text quality before any
+cache import; preserve ambiguous cases for review.
+
+HTTP denials, non-final responses, timeouts and provider authentication failures
+must remain separate from successful lookups returning no abstract. A static HTML
+probe cannot establish what browser rendering or authenticated access would reveal.
+AI extraction must be checked verbatim against retrieved content. Assistant review
+is distinct from a successful automated inference benchmark. Experimental reports
+remain local under the ignored `reports/` directory and do not update runtime data.

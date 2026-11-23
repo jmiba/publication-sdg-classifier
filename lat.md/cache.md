@@ -35,6 +35,13 @@ Self-run classifications are cached by publication, method identity, and input h
 
 The [[openalex-local]] comparison stores all 17 scores under its pinned model/input/scoring identity. Valid below-threshold results are reusable; failures are not cached, and malformed or stale entries are recomputed.
 
+Classification results have no age-based expiry. Reuse requires the same method
+identity, unchanged input hash and a valid stored response. A changed title or
+abstract, a new model/input/scoring identity, or a missing/invalid result causes
+classification on the next fetch that includes that publication. No background
+schedule reclassifies the cache. Historical results from other methods do not
+satisfy the current local model lookup.
+
 The Aurora fallback and empty-list recheck share a cache identity for their title-plus-abstract input and 0.4 cutoff; export provenance distinguishes them. LLM identities include provider endpoint, model, and prompt. Current OpenAlex SDGs come from the fetched source record. Archived raw records may retain the Aurora field removed from OpenAlex on 2 November 2026; new fetches do not request it. Existing classifier caches remain reusable.
 
 - [[cache_db.py#upsert_sdg_result]] — persists a classification keyed by (publication key, model) with the input `text_hash`; foreign-keyed to `canonical_works`.
